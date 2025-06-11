@@ -1,0 +1,68 @@
+.header-brand-img.desktop-logo, .header-brand-img.light-logo1{
+	max-width: 132px;
+}
+
+div.dataTables_paginate.paging_input{
+	margin-bottom: 2px!important;
+}
+
+.dataTables_paginate.paging_input span.paginate_button,.dataTables_paginate.paging_input span{
+	padding: 6px 12px;
+	text-decoration: none;
+	margin: 1px;
+	transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.dataTables_paginate.paging_input input.paginate_input{
+	padding: 6px 12px;
+	height: 32px;
+	width: 60px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	text-align: center;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -webkit-box-shadow:inset 0 0 10px rgb(240, 240, 240);
+       -moz-box-shadow:inset 0 0 10px rgb(240, 240, 240);
+            box-shadow:inset 0 0 10px rgb(240, 240, 240);
+}
+
+.dataTables_paginate.paging_input span.paginate_button.disabled {
+	color:#dadde1;
+}
+.dataTables_paginate.paging_input span.paginate_button:not(.disabled) {
+    cursor: pointer;
+}
+.dataTables_paginate.paging_input .page-item:hover:not(.disabled){
+	color: #233ac5;
+	background-color: #eaedf7;
+}
+.dataTables_paginate.paging_input .page-item.first{
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+	border: 1px solid #dadde1;
+}
+.dataTables_paginate.paging_input .page-item.last{
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+	border: 1px solid #dadde1;
+}
+.dataTables_paginate.paging_input span:not(:first-child) {
+    margin-left: -2px!important;
+}
+.dataTables_paginate.paging_input .page-item.next {
+	border: 1px solid #dadde1;
+	margin-left: -20px!important;
+}
+.dataTables_paginate.paging_input .page-item.previous{
+	border: 1px solid #dadde1;
+}
+.dataTables_paginate.paging_input span{
+	border-top: 1px solid #dadde1;
+	border-bottom: 1px solid #dadde1;
+}

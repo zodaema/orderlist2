@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Selector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #product-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            flex: 1;
+        }
+        .product-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        #controls {
+            flex: 1;
+            max-width: 300px;
+            margin-left: 20px;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .fancybox-trigger {
+            display: block;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: underline;
+            color: #007bff;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                align-items: center;
+                padding: 10px;
+            }
+
+            #product-container {
+                width: 100%;
+                height: 50vh; /* ใช้ครึ่งหนึ่งของหน้าจอ */
+                min-height: 400px;
+                margin-bottom: 10px;
+                position: relative;
+            }
+
+            .product-layer {
+                width: 100%;
+                height: 100%; /* ทำให้รูปภาพเต็มพื้นที่ */
+            }
+
+            #controls {
+                width: 100%;
+                max-width: 100%;
+                margin-left: 0;
+                padding: 10px;
+                background-color: #f9f9f9;
+            }
+
+            select, button {
+                width: 100%;
+                font-size: 14px; /* ลดขนาดฟอนต์ */
+                margin-bottom: 10px;
+            }
+
+            .fancybox-trigger {
+                display: block; /* ทำให้ปุ่มซูมแสดงในมือถือ */
+                font-size: 16px; /* ขนาดฟอนต์ของปุ่มซูม */
+            }
+
+            h1 {
+                font-size: 18px; /* ลดขนาดหัวข้อ */
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="product-container">
+        <img id="base-layer" class="product-layer" alt="Base Layer">
+        <img id="layer1" class="product-layer" alt="Body Layer">
+        <img id="layer2" class="product-layer" alt="Lock Strap Layer">
+        <img id="layer3" class="product-layer" alt="Short Strap Layer">
+        <img id="layer4" class="product-layer" alt="Metal Color Layer">
+    </div>
+    <div id="controls">
+        <h1>เลือกสินค้าของคุณ</h1>
+        <label for="leather-type-select">เลือกชนิดหนัง:</label>
+        <select id="leather-type-select">
+            <option value="chevre">Chèvre Leather</option>
+            <option value="calfskin">Calfskin Leather</option>
+        </select>
+
+        <label for="body-color-select">เลือกสีสำหรับ Body:</label>
+        <select id="body-color-select"></select>
+
+        <label for="lock-strap-color-select">เลือกสีสำหรับ Lock Strap:</label>
+        <select id="lock-strap-color-select"></select>
+
+        <label for="short-strap-color-select">เลือกสีสำหรับ Short Strap:</label>
+        <select id="short-strap-color-select"></select>
+
+        <label for="metal-color-select">เลือกสีของอะไหล่:</label>
+        <select id="metal-color-select">
+            <option value="Gold">Gold</option>
+            <option value="Silver">Silver</option>
+            <option value="Black">Black</option>
+        </select>
+
+        <button id="randomize-button">Random สี</button>
+        <a id="zoom-button" class="fancybox-trigger" href="#" data-fancybox="gallery" data-caption="Product Image">ดูรูปภาพขนาดใหญ่</a>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script>
+        const colors = ['White', 'Taupe', 'Pewter', 'Almond', 'Walnut', 'Sakura', 'Flamingo', 'Lavender', 'Cherry', 'Tangerine', 'Solar', 'Greentea', 'Mint', 'Sky', 'Hawaii', 'Ocean', 'Raven'];
+        const leatherColors = ['Natural', 'Mustard', 'Coffee', 'Caramel', 'Chocolate', 'Khaki', 'Olive', 'Green', 'Blue', 'Black', 'Orange', 'Red', 'Purple', 'Pink Milk', 'Aqua', 'Lime', 'Burgundy', 'Snow'];
+        const metalColors = ['Gold', 'Silver', 'Black'];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSelectOptions();
+            document.querySelectorAll('select').forEach(select => select.addEventListener('change', () => {
+                updateSelectOptions();
+                updateImages();
+            }));
+            document.getElementById('randomize-button').addEventListener('click', randomizeColors);
+            document.getElementById('zoom-button').addEventListener('click', async (event) => {
+                event.preventDefault();
+                try {
+                    const imgUrl = await createCompositeImage();
+                    document.getElementById('zoom-button').setAttribute('href', imgUrl);
+                    $.fancybox.open({
+                        src: imgUrl,
+                        type: 'image',
+                        opts: {
+                            caption: 'Product Image',
+                            thumb: imgUrl
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error creating composite image:', error);
+                }
+            });
+            randomizeColors();
+        });
+
+        function updateSelectOptions() {
+            const leatherType = document.getElementById('leather-type-select').value;
+            const colorList = leatherType === 'chevre' ? colors : leatherColors;
+            ['body-color-select', 'lock-strap-color-select', 'short-strap-color-select'].forEach(id => {
+                const select = document.getElementById(id);
+                const currentValue = select.value;
+                select.innerHTML = colorList.map(color => `<option value="${color}">${color}</option>`).join('');
+                if (colorList.includes(currentValue)) {
+                    select.value = currentValue;
+                } else {
+                    select.value = colorList[0];
+                }
+            });
+        }
+
+        function randomizeColors() {
+            const leatherType = document.getElementById('leather-type-select').value;
+            const colorList = leatherType === 'chevre' ? colors : leatherColors;
+            document.getElementById('body-color-select').value = getRandomColor(colorList);
+            document.getElementById('lock-strap-color-select').value = getRandomColor(colorList);
+            document.getElementById('short-strap-color-select').value = getRandomColor(colorList);
+            document.getElementById('metal-color-select').value = getRandomColor(metalColors);
+            updateImages();
+        }
+
+        function getRandomColor(colorList) {
+            return colorList[Math.floor(Math.random() * colorList.length)];
+        }
+
+        function updateImages() {
+            const leatherType = document.getElementById('leather-type-select').value;
+            const basePath = `${leatherType}/`;
+
+            document.getElementById('base-layer').src = `${basePath}base.png`;
+            document.getElementById('layer1').src = `${basePath}Body/${document.getElementById('body-color-select').value}.png`;
+            document.getElementById('layer2').src = `${basePath}Lock Strap/${document.getElementById('lock-strap-color-select').value}.png`;
+            document.getElementById('layer3').src = `${basePath}Short Strap/${document.getElementById('short-strap-color-select').value}.png`;
+            document.getElementById('layer4').src = `${basePath}Metal/${document.getElementById('metal-color-select').value}.png`;
+        }
+
+        async function createCompositeImage() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const layers = ['base-layer', 'layer1', 'layer2', 'layer3', 'layer4'];
+            const baseImage = document.getElementById('base-layer');
+            const width = baseImage.naturalWidth;
+            const height = baseImage.naturalHeight;
+            canvas.width = width;
+            canvas.height = height;
+
+            return new Promise((resolve, reject) => {
+                let loadedImages = 0;
+                const totalImages = layers.length;
+
+                layers.forEach(layerId => {
+                    const img = document.getElementById(layerId);
+                    img.complete ? drawImage(img) : img.onload = () => drawImage(img);
+                });
+
+                function drawImage(img) {
+                    ctx.drawImage(img, 0, 0, width, height);
+                    if (++loadedImages === totalImages) {
+                        resolve(canvas.toDataURL('image/png'));
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
